@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Instagram Followers Checker
 
-## Getting Started
+A lightweight client-side tool to compare your Instagram Followers and Following HTML exports and find out who doesn't follow you back.
 
-First, run the development server:
+**Privacy-first:** All processing happens locally in the browser — no uploads, no backend, no Instagram credentials required.
+
+## Features
+
+- Upload Instagram `followers.html` and `following.html` exports
+- Parse Instagram profile links in-browser using DOM parsing
+- Show counts for Mutual, Not following back, and Not followed by
+- Search and filter the resulting lists
+- Open Instagram profiles directly from the results
+- Responsive, accessible, and modern UI (Tailwind + shadcn)
+
+## Tech Stack
+
+- Next.js (App Router)
+- React + TypeScript
+- Tailwind CSS
+- shadcn/ui components
+- Lucide Icons
+
+## How it works
+
+1. Export your Instagram data (Followers / Following) from Instagram
+2. Upload the two HTML files in the browser
+3. The app parses anchors and extracts usernames locally
+4. Compare Followers vs Following to produce lists and statistics
+
+## Privacy
+
+All files are processed locally in your browser. Nothing is uploaded or stored on any server. No Instagram credentials are required.
+
+## Installation
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Export Instagram data (Settings → Privacy → Account Data → Download or use Instagram export flow)
+2. Upload `followers.html` using the Followers card
+3. Upload `following.html` using the Following card
+4. Click **Compare lists**
+5. Review the `Not following back` list and use the search to find users
 
-## Learn More
+## Development approach
 
-To learn more about Next.js, take a look at the following resources:
+This project was developed with an AI-assisted live coding workflow: a developer and AI collaborated on architecture, implementation, styling, and testing. The developer guided decisions, reviewed generated code, and verified functionality.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Screenshots
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Desktop
 
-## Deploy on Vercel
+![Desktop screenshot](./screenshots/desktop.png)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Mobile
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+![Mobile screenshot](./screenshots/mobile.png)
+
+> Placeholders above — add real screenshots into `./screenshots/` before publishing.
+
+## Future improvements
+
+- Add CSV / JSON export of results
+- Add multi-account support (client-side only)
+- Add keyboard shortcuts and bulk actions
+
+## Contributing
+
+This repository is prepared for demonstration and freelance presentations. If you contribute, please run TypeScript checks and linting before opening PRs.
+
+---
+
+If you want, I can also create the `screenshots/` folder and capture example layouts (placeholder images).

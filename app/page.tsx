@@ -1,69 +1,173 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+
+import FileUpload from "@/components/ui/file-upload/FileUpload";
+import UserList from "@/components/ui/comparison/UserList";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { InstagramUser } from "@/types/instagram";
+import { compareUsers, ComparisonResult } from "@/lib/instagram/compareUsers";
+import { Users, UserMinus, UserCheck, UserPlus, Search } from "lucide-react";
 
 export default function Home() {
+  const [followers, setFollowers] = useState<InstagramUser[]>([]);
+  const [following, setFollowing] = useState<InstagramUser[]>([]);
+
+  const [result, setResult] = useState<ComparisonResult | null>(null);
+  const [search, setSearch] = useState<string>("");
+
+  const handleCompare = () => {
+    if (followers.length === 0 || following.length === 0) {
+      return;
+    }
+
+    const comparisonResult = compareUsers(followers, following);
+
+    setResult(comparisonResult);
+  };
+
+  const canCompare = followers.length > 0 && following.length > 0;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <main className="min-h-screen bg-background relative overflow-hidden">
+      <div
+        className="absolute -top-40 -left-40 hidden aspect-square w-96 rounded-full bg-primary/10 blur-3xl opacity-40 sm:block"
+        aria-hidden
+      />
+
+      <div className="mx-auto flex min-h-screen max-w-5xl flex-col px-6 py-16">
+        {/* Header */}
+        <header className="mx-auto mb-8 max-w-2xl text-center">
+          <div className="mb-3 flex items-center justify-center gap-3">
+            <Badge variant="outline">100% Client-side</Badge>
+            <div className="inline-flex items-center rounded-full bg-muted/60 px-3 py-1 text-sm text-muted-foreground">
+              Instagram tools
+            </div>
+          </div>
+
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+            Instagram Followers Checker
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
+            Find out who does not follow you back. Upload your Instagram
+            Followers and Following HTML files to compare privately in your
+            browser.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        </header>
+
+        {/* Upload */}
+        <section className="grid gap-6 md:grid-cols-2">
+          <FileUpload
+            title="Followers"
+            description="Upload your Instagram followers HTML file."
+            onUsersParsed={setFollowers}
+          />
+
+          <FileUpload
+            title="Following"
+            description="Upload your Instagram following HTML file."
+            onUsersParsed={setFollowing}
+          />
+        </section>
+
+        {/* Compare */}
+        <div className="mt-8 flex justify-center">
+          <Button
+            size="lg"
+            disabled={!canCompare}
+            onClick={handleCompare}
+            className="inline-flex items-center gap-2"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <Users className="h-4 w-4" />
+            Compare lists
+          </Button>
         </div>
-      </main>
-    </div>
+
+        {/* Result */}
+        {result && (
+          <section className="mt-12">
+            <h2 className="mb-6 text-2xl font-bold text-center">
+              Comparison results
+            </h2>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="rounded-xl border p-6 text-center hover:shadow-md transition">
+                <div className="mx-auto mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                  <UserCheck className="h-5 w-5" />
+                </div>
+                <p className="text-sm text-muted-foreground">Mutual</p>
+
+                <p className="mt-2 text-3xl font-bold">
+                  {result.mutual.length}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  People following each other
+                </p>
+              </div>
+
+              <div className="rounded-xl border p-6 text-center ring-2 ring-destructive/10 shadow-sm bg-card/50 transform-gpu hover:scale-[1.01] transition">
+                <div className="mx-auto mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-destructive/10">
+                  <UserMinus className="h-5 w-5 text-destructive" />
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Not following back
+                </p>
+
+                <p className="mt-2 text-3xl font-bold">
+                  {result.notFollowingBack.length}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  People you follow who do not follow you back
+                </p>
+              </div>
+
+              <div className="rounded-xl border p-6 text-center hover:shadow-md transition">
+                <div className="mx-auto mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                  <UserPlus className="h-5 w-5" />
+                </div>
+                <p className="text-sm text-muted-foreground">Not followed by</p>
+
+                <p className="mt-2 text-3xl font-bold">
+                  {result.notFollowedBy.length}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  People who follow you that you do not follow
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-xl font-semibold">
+                    People who do not follow you back
+                  </h3>
+
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    You follow these people, but they do not follow you.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="relative rounded-lg border bg-background px-3 py-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                      aria-label="Search username"
+                      placeholder="Search username..."
+                      className="h-9 w-52 bg-transparent pl-10 text-sm outline-none"
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <UserList users={result.notFollowingBack} search={search} />
+            </div>
+          </section>
+        )}
+      </div>
+    </main>
   );
 }
